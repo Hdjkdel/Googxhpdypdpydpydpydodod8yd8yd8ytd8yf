@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Para Çek</title>
+  <title>Withdraw</title>
   <style>
     body {
       margin: 0;
@@ -40,11 +40,11 @@
   </style>
 </head>
 <body>
-  <h2>Para Çek</h2>
+  <h2>Withdraw</h2>
   <p>EX Coin: <span id="withdrawCoins">0.00</span></p>
-  <p>Dolar Karşılığı: <span id="withdrawUSD">0.00</span> USD</p>
-  <input id="wallet" placeholder="Cüzdan adresi girin" />
-  <button onclick="requestWithdraw()">Çekim Talebi</button>
+  <p>USD Equivalent: <span id="withdrawUSD">0.00</span> USD</p>
+  <input id="wallet" placeholder="Enter wallet address" />
+  <button onclick="requestWithdraw()">Request Withdrawal</button>
   <p id="withdrawMsg"></p>
 
   <div class="bottom-menu">
@@ -61,14 +61,14 @@
     function requestWithdraw() {
       let wallet = document.getElementById("wallet").value;
       if (coins < 100000) {
-        document.getElementById("withdrawMsg").innerText = "Minimum 100.000 EX Coin gerekir.";
+        document.getElementById("withdrawMsg").innerText = "Minimum 100,000 EX Coin required.";
         return;
       }
       if (wallet.length < 10) {
-        document.getElementById("withdrawMsg").innerText = "Geçerli bir cüzdan adresi girin.";
+        document.getElementById("withdrawMsg").innerText = "Please enter a valid wallet address.";
         return;
       }
-      document.getElementById("withdrawMsg").innerText = "Talebiniz alındı. Ödeme yakında yapılacak.";
+      document.getElementById("withdrawMsg").innerText = "Your request has been received. Payment will be made soon.";
     }
   </script>
 </body>
