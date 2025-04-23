@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Çek</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #000, #003300);
+      font-family: 'Segoe UI', sans-serif;
+      color: #0f0;
+      padding: 20px;
+      text-align: center;
+    }
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 80%;
+      margin: 10px auto;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .bottom-menu {
+      display: flex; justify-content: space-around;
+      background: #111; padding: 10px 0; position: fixed;
+      bottom: 0; left: 0; right: 0; border-top: 2px solid #0f0;
+    }
+    .bottom-menu button {
+      background: none; color: #0f0; font-size: 24px; border: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Para Çek</h2>
+  <p>EX Coin: <span id="withdrawCoins">0.00</span></p>
+  <p>Dolar Karşılığı: <span id="withdrawUSD">0.00</span> USD</p>
+  <input id="wallet" placeholder="Cüzdan adresi girin" />
+  <button onclick="requestWithdraw()">Çekim Talebi</button>
+  <p id="withdrawMsg"></p>
+
+  <div class="bottom-menu">
+    <button onclick="location.href='index.html'">🏠</button>
+    <button onclick="location.href='boost.html'">⚡</button>
+    <button onclick="location.href='withdraw.html'">💸</button>
+  </div>
+
+  <script>
+    let coins = parseFloat(localStorage.getItem("coins")) || 0;
+    document.getElementById("withdrawCoins").innerText = coins.toFixed(6);
+    document.getElementById("withdrawUSD").innerText = (coins * 0.005).toFixed(2);
+
+    function requestWithdraw() {
+      let wallet = document.getElementById("wallet").value;
+      if (coins < 100000) {
+        document.getElementById("withdrawMsg").innerText = "Minimum 100.000 EX Coin gerekir.";
+        return;
+      }
+      if (wallet.length < 10) {
+        document.getElementById("withdrawMsg").innerText = "Geçerli bir cüzdan adresi girin.";
+        return;
+      }
+      document.getElementById("withdrawMsg").innerText = "Talebiniz alındı. Ödeme yakında yapılacak.";
+    }
+  </script>
+</body>
+</html>

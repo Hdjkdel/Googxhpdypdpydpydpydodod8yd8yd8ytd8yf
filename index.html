@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EX Coin Madenci</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #000, #003300);
+      font-family: 'Segoe UI', sans-serif;
+      color: #0f0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      margin: 20px;
+    }
+
+    .mining-button {
+      width: 100px;
+      height: 100px;
+      background: #0f0;
+      color: #000;
+      font-size: 36px;
+      font-weight: bold;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .mining-button:hover {
+      background: #0c0;
+    }
+
+    .bottom-menu {
+      display: flex;
+      justify-content: space-around;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 2px solid #0f0;
+    }
+
+    .bottom-menu button {
+      background: none;
+      color: #fff;
+      font-size: 24px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>EX Coin Madenciliği</h1>
+    <h2>Hash Gücü: <span id="hashPower">10</span> H/s</h2>
+    <h2>EX Coin: <span id="coins">0.000</span></h2>
+    <h3>Dolar Karşılığı: <span id="usdValue">0.00</span> USD</h3>
+    <button class="mining-button" onclick="toggleMining()" id="miningBtn">▶</button>
+  </main>
+
+  <div class="bottom-menu">
+    <button onclick="location.href='index.html'">🏠</button>
+    <button onclick="location.href='boost.html'">⚡</button>
+    <button onclick="location.href='withdraw.html'">💸</button>
+  </div>
+
+  <script>
+    let coins = parseFloat(localStorage.getItem("coins")) || 0;
+    let hashPower = parseInt(localStorage.getItem("hashPower")) || 1;
+    let mining = false;
+    let interval;
+
+    function updateDisplay() {
+      document.getElementById("coins").innerText = coins.toFixed(6);
+      const usd = coins * 0.005; // 100 EX Coin = 0.05 USD
+      document.getElementById("usdValue").innerText = usd.toFixed(2);
+      localStorage.setItem("coins", coins.toFixed(6));
+    }
+
+    function toggleMining() {
+      const btn = document.getElementById("miningBtn");
+      if (mining) {
+        clearInterval(interval);
+        mining = false;
+        btn.innerText = "▶"; // Başlat simgesi
+      } else {
+        mining = true;
+        interval = setInterval(() => {
+          coins += 0.00001;
+          updateDisplay();
+        }, 1000);
+        btn.innerText = "■"; // Durdur simgesi
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>

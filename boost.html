@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="tr"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>EX Coin Madenci</title> 
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #000, #003300);
+      font-family: 'Segoe UI', sans-serif;
+      color: #0f0;
+      padding: 20px;
+      text-align: center;
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .packages {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .package {
+      background: #011;
+      border: 2px solid #0f0;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .package:hover {
+      background: #022;
+    }
+
+    /* Modal */
+    #paymentModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000a;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    #paymentModal .modal-content {
+      background: #011;
+      border: 2px solid #0f0;
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      background: #0f0;
+      border: none;
+      color: #000;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .spinner {
+      border: 4px solid #0f0;
+      border-top: 4px solid transparent;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin: 10px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .bottom-menu {
+      display: flex; justify-content: space-around;
+      background: #111; padding: 10px 0; position: fixed;
+      bottom: 0; left: 0; right: 0; border-top: 2px solid #0f0;
+    }
+    .bottom-menu button {
+      background: none; color: #0f0; font-size: 24px; border: none;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <h2>CU Gücü Paketleri</h2> 
+  <div class="packages"> 
+   <div class="package" onclick="openModal(10)"> 
+    <h3>PAKET 1 - 10$</h3> 
+    <p>+50 H/s</p> 
+   </div> 
+   <div class="package" onclick="openModal(20)"> 
+    <h3>PAKET 2 - 20$</h3> 
+    <p>+120 H/s</p> 
+   </div> 
+   <div class="package" onclick="openModal(30)"> 
+    <h3>PAKET 3 - 30$</h3> 
+    <p>+200 H/s</p> 
+   </div> 
+   <div class="package" onclick="openModal(60)"> 
+    <h3>PAKET 4 - 60$</h3> 
+    <p>+500 H/s</p> 
+   </div> 
+  </div> <!-- Modal --> 
+  <div id="paymentModal"> 
+   <div class="modal-content"> 
+    <h3 id="modalTitle">Paket Satın Al</h3> 
+    <div id="paymentStep1"> 
+     <p>Ödeme yöntemi seçin:</p> <button onclick="selectPaymentMethod('BTC')">BTC</button> <button onclick="selectPaymentMethod('USDT')">USDT</button> <button onclick="selectPaymentMethod('ETH')">ETH</button> 
+    </div> 
+    <div id="paymentStep2" style="display:none;"> 
+     <p><strong>Seçilen Paket:</strong> <span id="selectedPackage"></span></p> 
+     <p><strong>Ödeme Yöntemi:</strong> <span id="selectedMethod"></span></p> 
+     <p><strong>Fiyat:</strong> <span id="selectedPrice"></span> USD</p> 
+     <p><strong>Cüzdan Adresi:</strong><br> <span id="walletAddress"></span> </p> 
+     <p>Ödeme bekleniyor...</p> 
+     <div class="spinner"></div> 
+    </div> <button onclick="closeModal()">Kapat</button> 
+   </div> 
+  </div> <!-- Alt Menü --> 
+  <div class="bottom-menu">
+    <button onclick="location.href='index.html'">🏠</button>
+    <button onclick="location.href='boost.html'">⚡</button>
+    <button onclick="location.href='withdraw.html'">💸</button>
+  </div> 
+  <script>
+  let selectedPack = 0;
+  const walletAddresses = {
+    BTC: '3AzwFvmzowvNEYnqz2UXpXrcs7yetDaRND',
+    USDT (trc20): 'TNLSiZZxdyLxEqFtcwtGfquZKSy8ordrSi',
+    ETH (erc20): '0x43D7Cf3eA4a2acf02939a44737252e1B3f8c3A9C'
+  };
+
+  function openModal(price) {
+    selectedPack = price;
+    document.getElementById("paymentModal").style.display = "flex";
+    document.getElementById("paymentStep1").style.display = "block";
+    document.getElementById("paymentStep2").style.display = "none";
+    document.getElementById("modalTitle").innerText = "Paket Satın Al - " + price + "$";
+  }
+
+  function selectPaymentMethod(method) {
+    document.getElementById("paymentStep1").style.display = "none";
+    document.getElementById("paymentStep2").style.display = "block";
+    document.getElementById("selectedPackage").innerText = selectedPack + "$ Paket";
+    document.getElementById("selectedMethod").innerText = method;
+    document.getElementById("selectedPrice").innerText = selectedPack;
+    document.getElementById("walletAddress").innerText = walletAddresses[method];
+  }
+
+  function closeModal() {
+    document.getElementById("paymentModal").style.display = "none";
+  }
+</script> 
+ </body>
+</html>
