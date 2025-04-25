@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EX Coin Miner</title>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>EX Coin Miner</title> 
   <style>
     body {
       margin: 0;
@@ -61,32 +61,78 @@
       font-size: 24px;
       border: none;
     }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>EX Coin Mining</h1>
-    <h2>Hash Power: <span id="hashPower">10</span> H/s</h2>
-    <h2>EX Coin: <span id="coins">0.000</span></h2>
-    <h3>USD Value: <span id="usdValue">0.00</span> USD</h3>
-    <button class="mining-button" onclick="toggleMining()" id="miningBtn">▶</button>
-  </main>
 
-  <div class="bottom-menu">
-    <button onclick="location.href='index.html'">🏠</button>
-    <button onclick="location.href='boost.html'">⚡</button>
-    <button onclick="location.href='withdraw.html'">💸</button>
-  </div>
+    #adPopup {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #111;
+      color: #0f0;
+      border: 2px solid #0f0;
+      padding: 15px;
+      border-radius: 10px;
+      z-index: 1000;
+      width: 300px;
+    }
 
+    #adPopup button {
+      background: none;
+      border: none;
+      color: #f00;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #adLink {
+      display: inline-block;
+      margin-top: 10px;
+      background: #0f0;
+      color: #000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <main> 
+   <h1>EX Coin Mining</h1> 
+   <h2>Hash Power: <span id="hashPower">10</span> H/s</h2> 
+   <h2>EX Coin: <span id="coins">0.000</span></h2> 
+   <h3>USD Value: <span id="usdValue">0.00</span> USD</h3> <button class="mining-button" onclick="toggleMining()" id="miningBtn">▶</button> 
+  </main> 
+  <div class="bottom-menu"> <button onclick="location.href='index.html'">🏠</button> <button onclick="location.href='boost.html'">⚡</button> <button onclick="location.href='withdraw.html'">💸</button> 
+  </div> <!-- Reklam Penceresi --> 
+  <div id="adPopup"> 
+   <div style="text-align:right;"> <button onclick="closeAd()">✖</button> 
+   </div> 
+   <div id="adContent"></div> <a id="adLink" href="#" target="_blank">Reklama Git</a> 
+  </div> <!-- Firebase --> 
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script> 
   <script>
+    // Firebase ayarlarını kendi projenle değiştir
+    const firebaseConfig = {
+      apiKey: "AIzaSyDI5QTXVLUn1H1fwnmuItpA-Dxe5OKB9aQ",  
+    authDomain: "sorexx-b8f05.firebaseapp.com",  
+    projectId: "sorexx-b8f05",  
+    storageBucket: "sorexx-b8f05.firebasestorage.app",  
+    messagingSenderId: "71708542534",  
+    appId: "1:71708542534:web:7ef34f37145a1138c42c47"  
+  };  
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     let coins = parseFloat(localStorage.getItem("coins")) || 0;
-    let hashPower = parseInt(localStorage.getItem("hashPower")) || 1;
+    let hashPower = parseInt(localStorage.getItem("hashPower")) || 10;
     let mining = false;
     let interval;
 
     function updateDisplay() {
       document.getElementById("coins").innerText = coins.toFixed(6);
-      const usd = coins * 0.005; // 100 EX Coin = 0.05 USD
+      const usd = coins * 0.005;
       document.getElementById("usdValue").innerText = usd.toFixed(2);
       localStorage.setItem("coins", coins.toFixed(6));
     }
@@ -96,18 +142,45 @@
       if (mining) {
         clearInterval(interval);
         mining = false;
-        btn.innerText = "▶"; // Start icon
+        btn.innerText = "▶";
       } else {
         mining = true;
         interval = setInterval(() => {
           coins += 0.00001;
           updateDisplay();
         }, 1000);
-        btn.innerText = "■"; // Stop icon
+        btn.innerText = "■";
       }
     }
 
-    updateDisplay();
-  </script>
-</body>
+    function showAd() {
+      db.ref("reklam").once("value").then(snapshot => {
+        const data = snapshot.val();
+        if (data && data.aktif) {
+          document.getElementById("adContent").innerText = data.mesaj || "Reklam mesajı";
+          document.getElementById("adLink").href = data.link || "#";
+          document.getElementById("adPopup").style.display = "block";
+        }
+      });
+    }
+
+    function closeAd() {
+      document.getElementById("adPopup").style.display = "none";
+    }
+
+    function updateOnlineCount() {
+      const userId = "user_" + Math.floor(Math.random() * 1000000);
+      const userRef = db.ref("aktifKullanicilar/" + userId);
+      userRef.set(true);
+      userRef.onDisconnect().remove();
+    }
+
+    // Başlangıçta çalıştır
+    window.onload = function () {
+      updateDisplay();
+      showAd();
+      updateOnlineCount();
+    };
+  </script> 
+ </body>
 </html>
