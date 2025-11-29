@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Shark App - Login/Register</title> 
+  <style>
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #002244, #005588);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container */
+.container {
+    background: rgba(0,0,0,0.85);
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 350px;
+    box-shadow: 0 0 25px #00ccff;
+    position: relative;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #00ccff;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #00ccff;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button:hover {
+    transform: scale(1.05);
+    background: #0099cc;
+}
+
+/* Yükleniyor animasyonu */
+button.loading {
+    pointer-events: none;
+    opacity: 0.8;
+    position: relative;
+    color: transparent;
+}
+button.loading::after {
+    content: "";
+    width: 22px;
+    height: 22px;
+    border: 3px solid #000;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Tabs */
+.tab-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.tab-buttons button {
+    width: 48%;
+    background: #003d66;
+    color: #fff;
+}
+.tab-buttons button.active {
+    background: #00ccff;
+    color: #000;
+}
+
+/* Messages */
+.message {
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+.success {
+    background: rgba(0,255,150,0.2);
+    color: #00ff99;
+    box-shadow: 0 0 10px #00ff99;
+}
+
+.error {
+    background: rgba(255,50,50,0.2);
+    color: #ff6666;
+    box-shadow: 0 0 10px #ff4444;
+}
+</style> <!-- Firebase --> 
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script> 
+ </head> 
+ <body> 
+  <div class="container"> 
+   <div class="tab-buttons"> <button id="registerTab" class="active" onclick="showTab('register')">Kayıt Ol</button> <button id="loginTab" onclick="showTab('login')">Giriş Yap</button> 
+   </div> <!-- Kayıt --> 
+   <div id="register"> 
+    <h2>Kayıt Ol</h2> 
+    <input type="text" id="regName" placeholder="İsim"> 
+    <input type="email" id="regEmail" placeholder="E-posta"> 
+    <input type="password" id="regPass" placeholder="Şifre"> <button id="regBtn" onclick="registerUser()">Gönder</button> 
+    <div id="regMessage" class="message"></div> 
+   </div> <!-- Giriş --> 
+   <div id="login" style="display:none;"> 
+    <h2>Giriş Yap</h2> 
+    <input type="email" id="logEmail" placeholder="E-posta"> 
+    <input type="password" id="logPass" placeholder="Şifre"> 
+    <input type="text" id="logCode" placeholder="Doğrulama Kodu"> <button id="logBtn" onclick="loginUser()">Giriş</button> 
+    <div id="logMessage" class="message"></div> 
+   </div> 
+  </div> 
+  <script>
+const firebaseConfig = {
+    apiKey: "AIzaSyDbIT-5g89aZXp71gMPLCDnG06ckHX5SV8",
+    authDomain: "sharkapp-8e39b.firebaseapp.com",
+    projectId: "sharkapp-8e39b",
+    storageBucket: "sharkapp-8e39b.firebasestorage.app",
+    messagingSenderId: "1019602002274",
+    appId: "1:1019602002274:web:ab5644d406ffd47d4b0c3b"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* Tab Switch */
+function showTab(tab){
+    document.getElementById('register').style.display = tab === 'register' ? 'block':'none';
+    document.getElementById('login').style.display = tab === 'login' ? 'block':'none';
+    document.getElementById('registerTab').classList.toggle('active', tab==='register');
+    document.getElementById('loginTab').classList.toggle('active', tab==='login');
+}
+
+/* Sağlam uyarı gösterme */
+function showMessage(id, text, type){
+    const box = document.getElementById(id);
+    box.style.display = "block";
+    box.textContent = text;
+    box.className = `message ${type}`;
+    setTimeout(() => { box.style.display = "none"; }, 3000);
+}
+
+/* Loading buton */
+function setLoading(btnId, state){
+    const btn = document.getElementById(btnId);
+    if(state){ btn.classList.add('loading'); }
+    else { btn.classList.remove('loading'); }
+}
+
+/* Register */
+function registerUser(){
+    const n = regName.value.trim();
+    const e = regEmail.value.trim();
+    const p = regPass.value.trim();
+
+    if(!n || !e || !p){
+        showMessage("regMessage", "Tüm alanlar zorunlu!", "error");
+        return;
+    }
+
+    setLoading("regBtn", true);
+
+    db.collection("users").doc(e).set({
+        name: n, email: e, password: p, code: ""
+    }).then(()=>{
+        showMessage("regMessage", "Kayıt başarılı, admin kod verecek!", "success");
+    }).catch(err=>{
+        showMessage("regMessage", err.message, "error");
+    }).finally(()=>{
+        setLoading("regBtn", false);
+    });
+}
+
+/* Login */
+function loginUser(){
+    const e = logEmail.value.trim();
+    const p = logPass.value.trim();
+    const c = logCode.value.trim();
+
+    if(!e || !p || !c){
+        showMessage("logMessage", "Tüm alanlar zorunlu!", "error");
+        return;
+    }
+
+    setLoading("logBtn", true);
+
+    db.collection("users").doc(e).get().then(d=>{
+        if(!d.exists) return showMessage("logMessage", "Kullanıcı bulunamadı!", "error");
+
+        const data = d.data();
+        if(data.password === p && data.code === c){
+            localStorage.setItem("sharkUser", JSON.stringify(data));
+            window.location.href = "video.html";
+        } else {
+            showMessage("logMessage", "Şifre veya kod yanlış!", "error");
+        }
+    }).catch(err=>{
+        showMessage("logMessage", err.message, "error");
+    }).finally(()=>{
+        setLoading("logBtn", false);
+    });
+}
+
+/* Otomatik giriş */
+window.onload = ()=>{
+    if(localStorage.getItem("sharkUser")){
+        window.location.href = "video.html";
+    }
+};
+</script> 
+ </body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Shark App - Dashboard</title> 
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
+        background: url('arka.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #00eaff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 50, 0.75);
+    font-size: 26px;
+    font-weight: bold;
+    text-shadow: 0 0 15px #00ffff;
+  }
+
+  .container {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .coin-box {
+    background: rgba(0, 0, 40, 0.7);
+    border: 1px solid rgba(0,255,255,0.3);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0,255,255,0.2);
+  }
+
+  .coin-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .balance {
+    font-size: 18px;
+    color: #00ffcc;
+    margin-bottom: 10px;
+  }
+
+  .withdraw-section {
+    background: rgba(0, 0, 50, 0.6);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,255,255,0.3);
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #0077ff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  button:active {
+    transform: scale(0.97);
+  }
+
+  #withdrawMsg {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #ff4444;
+    font-weight: bold;
+  }
+
+  footer {
+    background: rgba(0,0,50,0.8);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid rgba(0,255,255,0.3);
+  }
+
+  footer button {
+    background: transparent;
+    color: #00eaff;
+    border: none;
+    font-size: 16px;
+    flex: 1;
+    padding: 10px 0;
+  }
+
+  footer button:hover {
+    background: rgba(0,255,255,0.1);
+  }
+
+  @media(max-width: 600px){
+    .coin-title { font-size: 20px; }
+    button { font-size: 16px; }
+  }
+</style> 
+ </head> 
+ <body> 
+  <header>
+   🦈 Shark App - Dashboard
+  </header> 
+  <div class="container"> <!-- BTC --> 
+   <div class="coin-box"> 
+    <div class="coin-title">
+      BTC
+    </div> 
+    <div class="balance">
+     Balance: <span id="btcBal">0.00</span> BTC
+    </div> 
+   </div> <!-- BNB --> 
+   <div class="coin-box"> 
+    <div class="coin-title">
+      BNB
+    </div> 
+    <div class="balance">
+     Balance: <span id="bnbBal">0.00</span> BNB
+    </div> 
+   </div> <!-- SOL --> 
+   <div class="coin-box"> 
+    <div class="coin-title">
+      SOL
+    </div> 
+    <div class="balance">
+     Balance: <span id="solBal">0.00</span> SOL
+    </div> 
+   </div> <!-- ETH --> 
+   <div class="coin-box"> 
+    <div class="coin-title">
+      ETH
+    </div> 
+    <div class="balance">
+     Balance: <span id="ethBal">0.00</span> ETH
+    </div> 
+   </div> <!-- Withdraw --> 
+   <div class="withdraw-section"> 
+    <h2 style="margin-top:0;">Withdraw</h2> 
+    <input type="text" id="walletAddress" placeholder="Enter your wallet address..."> <button onclick="withdraw()">Withdraw</button> 
+    <div id="withdrawMsg"></div> 
+   </div> 
+  </div> 
+  <footer> <button onclick="location.href='dhasbord.html'">Dashboard</button> <button onclick="location.href='search.html'">Search</button> <button onclick="location.href='bilgi.html'">Information</button> 
+  </footer> 
+  <script>
+function withdraw() {
+  let btc = parseFloat(document.getElementById("btcBal").innerText);
+  let bnb = parseFloat(document.getElementById("bnbBal").innerText);
+  let sol = parseFloat(document.getElementById("solBal").innerText);
+  let eth = parseFloat(document.getElementById("ethBal").innerText);
+
+  if (btc + bnb + sol + eth <= 0) {
+    document.getElementById("withdrawMsg").innerText = "❌ Yetersiz bakiye!";
+    return;
+  }
+
+  document.getElementById("withdrawMsg").style.color = "#00ff88";
+  document.getElementById("withdrawMsg").innerText = "✓ İşlem talebiniz alındı!";
+}
+</script> 
+ </body>
+</html>

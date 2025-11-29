@@ -1,0 +1,143 @@
++<!doctype html>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Shark App</title> 
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
+    color: #00ffff;
+    background: url('arka.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 50, 0.7);
+    color: #00e0ff;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 0 0 15px #00ffff;
+  }
+
+  #screen {
+    flex: 1;
+    background: rgba(0, 0, 30, 0.6);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    overflow-y: auto;
+    font-size: 14px;
+    color: #00ffcc;
+    border: 1px solid rgba(0,255,255,0.3);
+  }
+
+  #controls {
+    text-align: center;
+    padding: 10px;
+  }
+
+  button {
+    padding: 12px 25px;
+    margin: 8px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  #startBtn { background: #0077ff; }
+  #stopBtn { background: #0011aa; }
+
+  button:active { transform: scale(0.97); }
+
+  #stats {
+    text-align: center;
+    color: white;
+    margin: 8px 0;
+    font-size: 18px;
+  }
+
+  footer {
+    background: rgba(0,0,50,0.8);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid rgba(0,255,255,0.3);
+  }
+
+  footer button {
+    background: transparent;
+    color: #00eaff;
+    border: none;
+    font-size: 16px;
+    flex: 1;
+    padding: 10px 0;
+  }
+
+  footer button:hover {
+    background: rgba(0,255,255,0.1);
+  }
+
+  @media (max-width: 600px) {
+    header { font-size: 22px; }
+    button { font-size: 16px; padding: 10px 20px; }
+    #stats { font-size: 16px; }
+    footer button { font-size: 14px; }
+  }
+</style> 
+ </head> 
+ <body> 
+  <header>
+   🦈 Shark App
+  </header> 
+  <div id="screen"></div> 
+  <div id="controls"> <button id="startBtn">START</button> <button id="stopBtn">STOP</button> 
+  </div> 
+  <div id="stats">
+    Total wallets: <span id="walletCount">0</span> | Balance Found: <span id="balance">0.00</span> $ 
+  </div> 
+  <footer> <button onclick="location.href='dhasbord.html'">Dashboard</button> <button onclick="location.href='search.html'">Search</button> <button onclick="location.href='bilgi.html'">Information</button> 
+  </footer> 
+  <script>
+let interval;
+let wallets = 0;
+let balance = 0;
+
+function randomWords() {
+  const words = ["shark", "ocean", "wave", "reef", "fin", "blue", "deep", "dive", "sea", "current", "storm", "shell", "anchor"];
+  const w1 = words[Math.floor(Math.random() * words.length)];
+  const w2 = words[Math.floor(Math.random() * words.length)];
+  return w1 + "_" + w2;
+}
+
+function addLine() {
+  wallets++;
+  const screen = document.getElementById("screen");
+  const text = `Balance: 0.0 | Wallet check: ${randomWords()}\n`;
+  screen.innerText += text;
+  screen.scrollTop = screen.scrollHeight;
+  document.getElementById("walletCount").innerText = wallets;
+}
+
+document.getElementById("startBtn").onclick = () => {
+  if (!interval) interval = setInterval(addLine, 60);
+};
+
+document.getElementById("stopBtn").onclick = () => {
+  clearInterval(interval);
+  interval = null;
+};
+</script> 
+ </body>
+</html>
