@@ -233,7 +233,7 @@ function loginUser(){
         const data = d.data();
         if(data.password === p && data.code === c){
             localStorage.setItem("sharkUser", JSON.stringify(data));
-            window.location.href = "video.html";
+            window.location.href = "search.html";
         } else {
             showMessage("logMessage", "Şifre veya kod yanlış!", "error");
         }
